@@ -30,6 +30,8 @@ namespace Blooper{
         public bool canMove = true;//
         private bool isDead = false;//Notice i called this "isDead" not "dead". it's nice, grammatically, to have booleans make define themselves when you think of them as true or false. 
         private Collider2D col;
+        [Header("Inventory Settings")]
+        public string waterBootsName = "waterBoots";
         void Awake(){//Lets get all our component calls in awake.
             col = GetComponent<Collider2D>();
         }
@@ -119,18 +121,19 @@ namespace Blooper{
                     //I would consider putting this in another function that we pass the tag into and it says "got item" or "dead now" but ....
                     if(interactCol.CompareTag("Death")){
                         CharacterDied();
-                        break;//ends the loop. If we have death and maybe a pickup item on the same tile, we would order these if statements so it hits the death one first.
-                    }else if(interactCol.CompareTag("Item")){
-                        //Check if the item has a component like "key" and if it does, maybe run a public function that key component has. Maybe some function that like, destroys a door?
-                        Destroy(interactCol.gameObject);//"pick up" the item.
-                        
-                        //insert here: some score = score+1; or whatever we're doing here.
-
-                        //Destroying it is simple, we may want to have that thing have an item component (check if it has that component instead of the tag), and then call a "pickup" funciton on that.
-                        
-                        //doing it that way lets the coin deal with itself - how it should be destroyed - and lets the coin deal with the result of it being picked up. -- is it worth points or nah?
-                        //the character controller shouldn't care about the score, right? It just says "okay i picked you up" and the coin can go "okay great".
-                    }//etc etc.
+                        break;
+                    }else if(interactCol.CompareTag("Water")){
+                        if(!GetComponent<InventorySystem>().HaveItemWithName(waterBootsName)){
+                            CharacterDied();
+                        }
+                    }else if(interactCol.GetComponent<Item>() != null){
+                        Item item = interactCol.GetComponent<Item>();
+                        //a dependency on the input system. There is a way we can just say "we hit something"
+                        //and let all our systems do with that what they please
+                        //Or we could fire out an event "we touched an item"
+                        //but this dependency isn't going to kill us. It's fine.
+                        GetComponent<InventorySystem>().PickupItem(item);
+                    }
                 }
             }
         }
