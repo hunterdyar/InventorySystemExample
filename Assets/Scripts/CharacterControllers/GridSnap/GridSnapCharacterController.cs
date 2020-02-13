@@ -32,6 +32,7 @@ namespace Blooper{
         private Collider2D col;
         [Header("Inventory Settings")]
         public string waterBootsName = "waterBoots";
+        public string fireBootsName = "fireBoots";
         void Awake(){//Lets get all our component calls in awake.
             col = GetComponent<Collider2D>();
         }
@@ -120,11 +121,14 @@ namespace Blooper{
                 foreach(Collider2D interactCol in overlaps){
                     //I would consider putting this in another function that we pass the tag into and it says "got item" or "dead now" but ....
                     if(interactCol.CompareTag("Death")){
-                        CharacterDied();
-                        break;
+                        if(!GetComponent<InventorySystem>().HaveItemWithName(fireBootsName)){
+                            CharacterDied();
+                            break;
+                        }
                     }else if(interactCol.CompareTag("Water")){
                         if(!GetComponent<InventorySystem>().HaveItemWithName(waterBootsName)){
                             CharacterDied();
+                            break;
                         }
                     }else if(interactCol.GetComponent<Item>() != null){
                         Item item = interactCol.GetComponent<Item>();

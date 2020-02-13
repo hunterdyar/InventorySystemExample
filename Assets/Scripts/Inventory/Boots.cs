@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpecialBoots : Item
+public class Boots : Item
 {
     void Start(){
         addToInventory = true;
@@ -11,7 +11,7 @@ public class SpecialBoots : Item
     {
         //we can only wear one pair of boots at a time!
         foreach(Item i in inventorySystem.GetInventory()){
-            if(i.GetType() == typeof(SpecialBoots)){
+            if(i.GetType() == typeof(Boots)){
                 //we are looping through a copy of the inventory, so removing items from it shouldn't break anything
                 inventorySystem.DropItem(i);
                 
